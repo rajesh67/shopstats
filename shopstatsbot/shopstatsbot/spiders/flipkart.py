@@ -4,7 +4,6 @@ import json
 from scrapy.spiders import CrawlSpider,Rule
 from scrapy.linkextractors import LinkExtractor
 
-#from scrapperdata.models import FlipkartBaseProduct
 
 flipkart_affid='rajeshmee'
 flipkart_token='78fef03fe9d84c9eb6387b80ba4c98d2'
@@ -68,7 +67,7 @@ class FlipkartReviewsSpider(CrawlSpider):
 
 	def parse_next_page_reviews(self,response):
 		print response.url
-		
+
 	def filter_links(self,links):
 		for link in links:
 			if link not in self.reviews_url:
