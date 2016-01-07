@@ -1,0 +1,293 @@
+<div class="product-details" ng-controller="ProductDetailCtrl">
+	<div class="row" style="">
+		<div class="col-md-2"></div>
+		<div class="col-md-8">
+			<div class="panel panel-default">
+				<div class="panel-body">
+			<div class="row" style="">
+				<div class="col-md-4"></div>
+				<div class="col-md-6">
+					<p class="center">{{product.categories}}</p>
+				</div>
+				<div class="col-md-4">
+					<img src="{{ product.images[0] }}" style="height: 100%;width: 100%;">
+					<span class="images"></span>
+				</div><!--/image--> 
+				<div class="col-md-4">
+
+					<h4>{{ product.product_title }}</h4>
+					<h5>{{ product.color }}</h5>
+					<div class="price" style="margin-top: 50px;">
+						<p>Price:<b>{{ product.price }}</b></p>
+						<p>Mrp:<b>{{ product.mrp }}</b></p>
+						<p>Save:<b>{{ product.discount }}%</b></p>
+						<a href="{{ product.product_url }}">
+							<button class="btn btn-default btn-lg">visit store</button>
+						</a>
+					</div>
+				</div><!--/col-md-3 -->
+
+				<div class="col-md-4">
+					<!--/offers list-->
+					<div class="panel offers-list panel-default">
+						<div class="panel-body">
+							<b>Offers</b>
+							<p>{{product.offers}}</p>
+						</div>
+					</div>
+
+
+
+					<!--/color-varients-->
+					<div class="color-varients panel panel-default">
+						<div class="panel-body">
+							<b>Color Varients</b>
+								<div class="var-list" ng-repeat="productId in product.color_varients">
+									<a ng-click="loadProduct()" href="#/products/{{categoryId}}/{{productId}}">{{ productId }}</a>
+								</div>
+						</div>
+					</div>
+
+					<!-- /size varients-->
+					<div class="size-varients panel panel-default">
+						<div class="panel-body">
+							<b>Size Varients</b>
+								<div ng-repeat="productId in product.size_varients">
+									<a ng-click="loadProduct()" href="#/products/{{categoryId}}/{{productId}}">{{ productId }}</a>
+								</div>
+						</div>
+					</div>
+					
+				</div><!--/offer list  -->
+
+			</div><!--/col-md-8 row-->
+				</div><!--/panel body-->
+			</div><!--/panel-->
+		</div><!--/col-md-8 -->
+	<div class="col-md-2"></div>
+	</div><!-- /row class-->
+
+	<div class="row" style="margin-top: 10px;">
+		<div class="col-md-2"></div>
+		<div class="col-md-8 table-centared panel panel-default">
+			<h3>Specifications</h3>
+			<table class="table table-bordered">
+				<tr ng-hide="product.instock">
+					<td>inStock</td>
+					<td>{{ product.instock }}</td>
+				</tr>
+				
+				
+				<tr ng-hide="product.emi_available">
+					<td>emiAvailable</td>
+					<td>{{ product.emi_available }}</td>
+				</tr>
+				<tr ng-hide="product.cod_available">
+					<td>codAvailable</td>
+					<td>{{product.cod_available}}</td>
+				</tr>
+				<tr ng-hide="product.delivery_time===null">
+					<td>delivery time</td>
+					<td>{{product.delivery_time}}</td>
+				</tr>
+				
+				<tr ng-hide="product.color===null">
+					<td>color</td>
+					<td>{{product.color}}</td>
+				</tr>
+				<tr ng-hide="product.stylecode===null">
+					<td>styleCode</td>
+					<td>{{product.stylecode}}</td>
+				</tr>
+				<tr ng-hide="product.size===null">
+					<td>size</td>
+					<td>{{product.size}}</td>
+				</tr>
+				<tr ng-hide="product.sizeunit===null">
+					<td>sizeUnit</td>
+					<td>{{product.sizeunit}}</td>
+				</tr>
+			</table>
+		</div><!--/table-->
+
+		
+		<div class="col-md-2"></div>
+	</div>
+	
+
+	<!-- Product Reviews Analyzed-->
+	<div class="row product-analyzed-reviews" >
+		<div class="col-md-2"></div>
+		<div class="col-md-8 panel panel-default">
+			<div class="reviews-header">
+				<h3>NLP Processed Reviews</h3>
+				<div class="reviews-information" ng-hide="analyzed_reviews_list.length===0">
+					<h5>Showing reviews from <b>{{ start }}-{{end}}</b> out of total <b>{{ analyzed_reviews_list.length }}</b> reviews</h5>
+				</div>
+
+				<div class="reviews-pagination">
+				<nav>
+					<ul class="pager" ng-hide="analyzed_reviews_list.length===0">
+						<li ng-hide="currPage<=1" class="previous">
+							<a ng-click="previousPage()" href=""><span aria-hidden="true">&larr;</span> Previous Reviews</a>
+						</li>
+						
+						<li ng-hide="end>=reviews_list.length" class="next">
+							<a ng-click="nextPage()" href="">Next Reviews<span aria-hidden="true">&rarr;</span></a>
+						</li>
+					</ul>
+				</nav>
+			</div><!--/reviews-pager-->
+
+
+
+				<div ng-repeat="review in analyzed_reviews" class="panel panel-default">
+					<div class="panel-body">
+						<div class="col-md-2 text-center">
+							<a href="{{review.reviewer_url}}">{{review.reviewer[0]}}</a>
+							<div class="">
+								<img ng-show="{{review.certified}}" src="shopstats/images/certified_buyer.png">
+								<img src="http://img6a.flixcart.com/www/prod/images/first_to_review-0567206d.png" ng-hide="true">
+							</div>
+							<!-- put date here-->
+							<small></small>
+						</div>
+
+						<div class="col-md-1">
+							<span ng-show="review.sentiment===pos" class="glyphicon glyphicon-thumbs-up" aria-hidden="true" style="color: green;">
+								<b>{{review.rating}}</b>/5
+							</span>
+
+							<span ng-show="review.sentiment===neg" class="glyphicon glyphicon-thumbs-down" aria-hidden="true" style="color: red;">
+								<b>{{review.rating}}</b>/5
+							</span>
+
+							<span ng-show="review.sentiment===neutral" class="glyphicon glyphicon-hand-right" aria-hidden="true" style="">
+								<b>{{review.rating}}</b>/5
+							</span>
+
+						</div>
+						<div class="col-md-8">
+							<div class="head">
+								<b>{{review.head}}</b>
+							</div>
+							<div class="review-text">
+								<span ng-repeat="sentence in review.review_text">
+
+									<span ng-show="sentence.details.sentiment===pos" class="review-sentence-pos" style="color: 66FF00">
+										<font color="green">
+											{{sentence.sentence}}
+										</font>
+									</span>
+
+									<span ng-show="sentence.details.sentiment===neg" class="review-sentence-neg" style="">
+										<font color="red">
+											{{sentence.sentence}}
+										</font>
+
+									</span>
+
+									<span ng-show="sentence.details.sentiment===neutral" class="review-sentence-neg" style="">
+										<font color="black">{{sentence.sentence}}</font>
+									</span>
+
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!--Product Reviews Extracted -->
+	<div class="row product-reviews" >
+		<div class="col-md-2"></div>
+
+
+		<div class="col-md-8 panel panel-default reviews-list">
+
+			<!--reviews pagination-->
+			<div class="reviews-information">
+				<h3>Reviews</h3>
+				<h5>Showing reviews from <b>{{ start }}-{{end}}</b> out of total <b>{{ reviews_list.length }}</b> reviews</h5>
+			</div>
+
+			<div class="reviews-pagination">
+				<nav>
+					<ul class="pager">
+						<li ng-hide="currPage<=1" class="previous">
+							<a ng-click="previousPage()" href=""><span aria-hidden="true">&larr;</span> Previous Reviews</a>
+						</li>
+						
+						<li ng-hide="end>=reviews_list.length" class="next">
+							<a ng-click="nextPage()" href="">Next Reviews<span aria-hidden="true">&rarr;</span></a>
+						</li>
+					</ul>
+				</nav>
+			</div><!--/reviews-pager-->
+
+
+			<div ng-repeat="review in reviews" class="panel panel-default panel-sm">
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-2">
+							<div class="text-center">
+								<a ng-hide="review.reviewer_url.length===0" href="{{ review.reviewer_url }}">{{review.reviewer[0]}}</a>
+							</div>
+							<div class="text-center">star:<b>{{ review.rating }}</b>/5</div>
+							<div class="text-center">
+								<img ng-show="{{review.certified}}" src="shopstats/images/certified_buyer.png">
+								<img src="images/certified_buyer.png" ng-hide="true">
+							</div>
+
+						</div>
+						
+						<div class="col-md-10">
+							<div class="review-title">
+								<b>{{ review.head }}</b>
+							</div>
+							<div class="review-text">
+								{{review.review_text}}
+							</div>
+							
+						</div>
+						<span class="pull-right text-bottom">
+							<a href="{{review.parmalink}}">
+							<button class="btn btn-xs btn-default" style="margin-bottom: -25px;">parmalink</button>
+							</a>
+						</span>
+					</div>
+				</div>
+
+			</div><!--/review-panel -->
+			
+		</div><!--/reviews-list-->
+	</div><!--/product-reviews-->
+
+
+	<div class="row json-specifications">
+		<div class="col-md-2"></div>
+		
+		<!--List Product Specifications -->
+		<div class="col-md-8 panel panel-default product-specifications">
+			<h3>JSON Specifications</h3>
+			<div ng-repeat="(key,value) in details">
+				<table ng-hide="value.length===0" class="table table-bordered">
+					<tbody>
+						<tr>
+							<th>{{key}}</th>
+						</tr>
+						<tr ng-repeat="spec in value">
+							<td ng-repeat="(specKey,specValue) in spec">{{specValue}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div><!--/details-->	
+		</div><!--/product specifications -->
+
+
+	</div><!--/json-specifications-->
+
+</div>

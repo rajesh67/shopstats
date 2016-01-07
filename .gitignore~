@@ -1,0 +1,27 @@
+
+
+#data files
+shopstats/apiProducts/*
+*.csv
+*.gzip
+*.zip
+*.sublime-workspace
+*.pdf
+*.json
+*.pyc
+frontend/*
+scrapydocs/*
+django-nonrel/*
+Djangodocs/*
+shopstats/html/*
+shopstats/prices/*
+shopstats/reviews/*
+shopstats/productsjson/*
+shopstats/products/*
+shopstats/Data/*
+angular-phonecat/*
+shopstats/apiProducts/*
+shopstats/*.json
+angular-app/angular-seed-master/app/bower_components/*
+angular-app/angular-seed-master/node_modules/*
+

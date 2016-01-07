@@ -1,0 +1,22 @@
+
+	<div class="col-md-4"></div>
+	<div class="col-md-8">
+		<h1>List Product  here</h1>
+		<ul class="products-list">
+			<li ng:repeat="product in products">
+				<div class="product-grid" style="margin-top: 30px; margin-bottom: 30px;">
+					<h4><b>{{ product.product_title }}</b></h4>
+					<div class="price-tab">
+						<h4>Price:<b>{{ product.price }}</b></h5>
+						<h5>Mrp:<b>{{ product.mrp }}</b></h5>
+						<h5>Save:<b>{{ product.discount }}%</b></h5>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<nav>
+  		
+  		<div data-pagination="" data-num-pages="numPages()" data-current-page="currentPage" data-max-size="maxSize" data-boundary-links="true"></div>
+		</nav>
+	
+	</div>

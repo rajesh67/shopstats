@@ -1,0 +1,13 @@
+Content-Language: en
+Content-Encoding: gzip
+Set-Cookie: sdrmc=""; Domain=.snapdeal.com; Expires=Thu, 01-Jan-1970 00:00:10 GMT
+Set-Cookie: SPRING_SECURITY_REMEMBER_ME_COOKIE=""; Domain=.snapdeal.com; Expires=Thu, 01-Jan-1970 00:00:10 GMT
+Set-Cookie: AWSELB=A9C537B30E076CDBCC1B9998259521F79795C353D1DF2A0435368C6E4768EB61F155147CEA3A61F04A25D9AF803C804AE7B821005AAB72A62D401B7F399FF3CA802C9832E4;PATH=/;MAX-AGE=3600
+Expires: Sat, 28 Nov 2015 22:16:19 GMT
+Vary: Accept-Encoding
+Server: Apache-Coyote/1.1
+Pragma: no-cache
+Cache-Control: no-cache, no-store
+Date: Sat, 28 Nov 2015 22:16:19 GMT
+X-Frame-Options: SAMEORIGIN
+Content-Type: text/html;charset=UTF-8

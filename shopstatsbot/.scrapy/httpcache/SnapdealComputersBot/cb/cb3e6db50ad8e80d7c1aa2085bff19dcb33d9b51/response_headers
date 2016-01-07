@@ -1,0 +1,19 @@
+Content-Language: en
+Content-Encoding: gzip
+Set-Cookie: u=144874513846780879; Domain=.snapdeal.com; Expires=Fri, 17-Dec-2083 00:26:25 GMT; Path=/
+Set-Cookie: JSESSIONID=A7FADDAE2A9766F0C99E75599372999B; Path=/; HttpOnly
+Set-Cookie: JSESSIONID=A7FADDAE2A9766F0C99E75599372999B; Domain=.snapdeal.com; Path=/; HttpOnly
+Set-Cookie: sd.zone=3; Domain=.snapdeal.com; Path=/
+Set-Cookie: sdrmc=""; Domain=.snapdeal.com; Expires=Thu, 01-Jan-1970 00:00:10 GMT
+Set-Cookie: SPRING_SECURITY_REMEMBER_ME_COOKIE=""; Domain=.snapdeal.com; Expires=Thu, 01-Jan-1970 00:00:10 GMT
+Set-Cookie: AWSELB=A9C537B30E076CDBCC1B9998259521F79795C353D1596B28808EEF77106C719092D8D84F695738409A47064137FA0D9CD3B8721BA421FA6E60EDD8095E9B4F891E73DF0856;PATH=/;MAX-AGE=3600
+Set-Cookie: alps=ns; expires=Sat, 05-Dec-2015 21:12:19 GMT; path=/; domain=.snapdeal.com
+Expires: Sat, 28 Nov 2015 21:12:19 GMT
+Vary: Accept-Encoding
+Server: Apache-Coyote/1.1
+Pragma: no-cache
+Cache-Control: no-cache, no-store
+Date: Sat, 28 Nov 2015 21:12:19 GMT
+P3P: policyref="http://www.snapdeal.com/w3c/p3p.xml", CP="NOI CURa ADMa DEVa TAIa OUR BUS IND UNI COM NAV INT";HttpOnly
+Content-Type: text/html;charset=UTF-8
+X-Frame-Options: SAMEORIGIN

@@ -1,0 +1,142 @@
+from os.path import join,isfile
+from os import listdir
+
+from .helpers import iterparse
+import json
+
+from textblob.sentiments import NaiveBayesAnalyzer
+from textblob import TextBlob
+
+
+POSITIVE_TYPE_REVIEW='positive'
+NEUTRAL_TYPE_REVIEW='neutral'
+NEGATIVE_TYPE_REVIEW='negative'
+
+REVIEWS_BASE_DIR='reviews/%s/%s/'
+
+REVIEWS_FILE='reviews/%s/%s/%s'
+REVIEWS_ANALAYSED_FILE='reviews/%s/%s/analyzed/%s'
+
+#flipkart file reader
+class FlipkartReviewFileReader(object):
+	"""docstring for FlipkartReviewFileReader"""
+	def __init__(self):
+		super(FlipkartReviewFileReader, self).__init__()
+		
+	def get_reviews(self,store,categoryId,productId):
+		review_file=REVIEWS_FILE%(store,categoryId,productId)
+		file_exists=isfile(review_file)
+		if file_exists:
+			r_file=open(review_file,'r')
+			data=r_file.read()
+			r_file.close()
+			
+			out_data=[]
+			decoded_data=[d for d in iterparse(data)]
+			for reviews in decoded_data:
+				for review in reviews:
+					review['review_text']=[text.strip() for text in review['review_text']]
+					out_data.append(review)
+			print 'Found Total {0} Reviews for productId={1}'.format(out_data.__len__(),productId)
+			return out_data
+		else:
+			print "File Does not exist"
+
+class FlipkartAnalyzedReview(object):
+	"""docstring for FlipkartAnalyzedReview"""
+	def __init__(self):
+		super(FlipkartAnalyzedReview, self).__init__()
+		self.productId=''
+		self.head=''
+		self.sentiment=''
+		self.polarity=''
+
+		self.rating=''
+		self.review_text=''
+
+		self.reviewer=''
+		self.reviewer_url=''
+		self.certified=''
+		self.date=''
+
+	def __dict__(self):
+		return {
+			'productId':self.productId,
+			'head':self.head,
+			'sentiment':self.sentiment,
+			'polarity':self.polarity,
+			'rating':self.rating,
+			'review_text':self.review_text,
+			'reviewer':self.reviewer,
+			'reviewer_url':self.reviewer_url,
+			'certified':self.certified,
+			'date':self.date,
+		}
+
+
+#flipkart file reviews analyzer
+class FlipkartDictReviewAnalyzer(object):
+	
+	"""docstring for FlipkartDictReviewAnalyzer"""
+	
+	def __init__(self, store,categoryId):
+		#convert review_text list to sentence
+		self.store=store
+		self.categoryId=categoryId
+		self.reader=FlipkartReviewFileReader()
+		super(FlipkartDictReviewAnalyzer, self).__init__()
+
+	def analyze_category_reviews(self):
+		def _modify_review_text(review_text):
+			modified_text=''
+			for text in review_text:
+				data=text.strip()
+				if data:
+					modified_text=modified_text+' '+data
+			return modified_text
+		#analyze all the categiry reviews
+		category_dir=REVIEWS_BASE_DIR%(self.store,self.categoryId)
+		products=[f for f in listdir(category_dir) if isfile(join(category_dir,f))]
+		
+		total_products=products.__len__()
+
+		for key,product in enumerate(products):
+			print 'processing {0}/{1} product reviews file'.format(key,total_products)
+			print "Now Analyzing Reviews for productId=%s"%product
+			analysed_reviews=[]
+			reviews=self.reader.get_reviews(self.store,self.categoryId,product)
+			for review in reviews:
+				analysed_review=FlipkartAnalyzedReview()
+				analysed_review.reviewer=review['reviewer']
+				analysed_review.reviewer_url=review['reviewer_url']
+				analysed_review.review_text=_modify_review_text(review['review_text'])
+				analysed_review.date=review['date']
+				analysed_review.certified=review['certified']
+				analysed_review.rating=review['rating']
+				analysed_review.productId=review['productId']
+				analysed_review.head=review['head']
+				#now modify the review_text
+				analysed_review=self.analyze_review(analysed_review)
+				analysed_reviews.append(analysed_review.__dict__())
+				#now review have been analysed so save it in a json file
+			analysed_file=REVIEWS_ANALAYSED_FILE%(self.store,self.categoryId,product)
+			f=open(analysed_file,'w+b')
+			f.write(json.dumps(analysed_reviews))
+			f.close()
+
+	def analyze_review(self,review):
+		blob=TextBlob(review.review_text,analyzer=NaiveBayesAnalyzer())
+		classification=blob.sentiment
+		
+		review.polarity=blob.polarity
+		review.sentiment=classification.classification
+		
+		analyzed_sentences=[]
+		for sentence in blob.sentences:
+			sentiment=sentence.sentiment.classification
+			polarity=sentence.polarity
+			analyzed_sentences.append({'sentence':sentence.string,'details':{'sentiment':sentiment,'polarity':polarity}})
+		review_text=analyzed_sentences
+		
+		review.review_text=review_text
+		return review

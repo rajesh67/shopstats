@@ -1,0 +1,10 @@
+Content-Encoding: gzip
+Set-Cookie: Tkt=3a5e1e31; expires=Thu, 07-Jan-2016 16:51:48 GMT; path=/; domain=.flipkart.com; httponly
+Set-Cookie: agent=deleted; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/; domain=.flipkart.com
+Expires: Mon, 26 Jul 1997 05:00:00 GMT
+Vary: Accept-Encoding
+Vary: User-Agent
+Server: nginx
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Date: Thu, 07 Jan 2016 16:46:49 GMT
+Content-Type: text/html

@@ -1,0 +1,6 @@
+Accept-Language: en
+Accept-Encoding: gzip,deflate
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+User-Agent: Scrapy/1.0.3 (+http://scrapy.org)
+Cookie: Tkt=ebe00181
+Referer: http://www.flipkart.com/lenovo-k3-note/product-reviews/ITMEBYGMMK8CFMY4?pid=MOBE8AHABTYGSZ2J&rating=1%2C2%2C3%2C4%2C5&reviewers=all&sort=most_helpful&start=2140&type=all

@@ -1,0 +1,13 @@
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, X-fk-method, X-sn, X-sc, _sn_, appVisitorId, _sc_, X-User-Agent
+Content-Encoding: gzip
+Set-Cookie: T=TI144870643200000003446854274477206571116473636432083203173638844508;Path=/;Domain=flipkart.com;Expires=Tue, 25-Nov-2025 10:26:28 GMT;HttpOnly
+Set-Cookie: SN=2.VI4F4DA46211684014AB787B5B403E7259.SIA4F56669B8B04CE69D9A1E6AA001CF33.VSE24F1D5B678F41C89452B2013E90A00B.1448706388;Path=/;Domain=flipkart.com;Expires=Thu, 26-May-2016 10:26:28 GMT;HttpOnly
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+X-User-Agent: Scrapy/1.0.3 (+http://scrapy.org)
+Server: nginx
+X-Lego-Host: 1227359071-
+Date: Sat, 28 Nov 2015 10:26:28 GMT
+Vary: Accept-Encoding, User-Agent
+X-Frame-Options: SAMEORIGIN
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Content-Type: text/html;charset=utf-8

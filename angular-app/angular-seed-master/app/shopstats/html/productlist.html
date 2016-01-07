@@ -1,0 +1,59 @@
+
+<div class="row" ng-controller="ProductListCtrl" style="">
+	<div class="col-md-2">
+	</div>
+	<div class="col-md-8">
+		<nav>
+  			<ul class="pager">
+  			  	<li ng-hide="currPage<=1" class="previous"><a ng-click="previousPage()" href=""><span aria-hidden="true">&larr;</span> Previous Products</a></li>
+    			<li class="next"><a ng-click="nextPage()" href="">Next Products<span aria-hidden="true">&rarr;</span></a></li>
+  			</ul>
+		</nav><!--/pagination-->
+	</div>
+	<div class="col-md-2"></div>
+
+	<div class="col-md-12 grids">
+	<div class="col-md-2">
+		
+	</div>
+	<div class="col-md-8">
+	<div ng:repeat="(count,product) in products" class="col-md-3 product-grid" style="height: 250px;">
+						
+						<div class="panel panel-success panel">
+							<div class="panel-body">
+								<small>
+									<a href="#/products/{{ categoryId }}/{{ product.product_id }}">
+									<b>
+										<small>{{ product.product_title }}</small>
+									</b>	
+									</a>
+								</small>
+
+							<div class="pull-right">
+								<a href="#/products/{{ categoryId }}/{{ product.product_id }}">
+									<img ng-src="{{ product.images[0] }}" style="height: 100px; width:60px">
+								</a>
+							</div>
+							
+							<div class="price-tab">
+								<small>Price:</small><b>{{ product.price }}</b><br/>
+								<small>Mrp:</small><b>{{ product.mrp }}</b><br/>
+								<small>Save:</small><b>{{ product.discount }}%</b><br/>
+							</div>
+							</div><!--/panel-body-->
+
+							<div class="panel-footer">
+								<b>{{ product.total_reviews }}</b>
+								<small>Reviews</small>
+							</div>
+						</div><!--/panel-->	
+	</div><!--/product-grid-->
+	</div><!--/md-8-->
+	<div class="col-md-2"></div>
+</div><!--/grids-->
+
+
+
+</div>
+
+<!-- /pagination-->
