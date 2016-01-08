@@ -9,12 +9,10 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-'''import sys
+import sys
 import os
-
-sys.path.insert(0,'/home/raju/Downloads/December2015/scrapperdata')
-
-os.environ['DJANGO_SETTINGS_MODULE']='scrapperdata.settings'''
+sys.path.append('/home/raju/Downloads/December2015/scrapperdata')
+os.environ['DJANGO_SETTINGS_MODULE']='scrapperdata.settings'
 
 BOT_NAME = 'shopstatsbot'
 
@@ -88,5 +86,5 @@ AUTOTHROTTLE_DEBUG=False
 HTTPCACHE_ENABLED=True
 HTTPCACHE_EXPIRATION_SECS=5
 HTTPCACHE_DIR='httpcache'
-HTTPCACHE_IGNORE_HTTP_CODES=[]
+HTTPCACHE_IGNORE_HTTP_CODES=['500','501']
 HTTPCACHE_STORAGE='scrapy.extensions.httpcache.FilesystemCacheStorage'

@@ -19,7 +19,7 @@ class ShopstatsReviewsPipeline(object):
 		return pipeline
 	
 	def spider_opened(self, spider):
-		file = open('%s_cameras_reviews.json' % spider.name, 'w+b')
+		file = open('%s.json' % spider.name, 'w+b')
 		self.files[spider] = file
 		self.exporter = JsonItemExporter(file)
 		self.exporter.start_exporting()

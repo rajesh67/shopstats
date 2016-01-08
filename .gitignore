@@ -8,6 +8,6 @@
 *.pdf
 *.json
 *.pyc
-shopstatsbot/.scrapy
+shopstatsbot/.scrapy/httpcache/
 
 
