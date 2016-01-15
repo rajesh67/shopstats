@@ -135,7 +135,7 @@ INSTALLED_APPS = (
     'corsheaders',
     'django_mongodb_engine',
     'api',
-    'flipkart',
+    'scrapper',
     'djangotoolbox',
 #    'mongoengine.django.mongo_auth',
     

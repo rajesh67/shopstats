@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
-
 import scrapy
 import json
 from scrapy.spiders import CrawlSpider,Rule
 from scrapy.linkextractors import LinkExtractor
-from scrapper.models import FlipkartReview,FlipkartBaseProduct,Image
+#from flipkart.models import FlipkartBaseProduct
 from shopstatsbot.items import ReviewItem
 #from scrapperdata.flipkart.models import FlipkartBaseProduct
-
-from urlparse import urlparse,parse_qs
 import re
 import locale
 locale.setlocale(locale.LC_ALL, 'en_US.UTF8')
@@ -20,7 +17,7 @@ flipkart_categories=["tablets","mobiles","laptops","cameras","desktops","laptops
 reviews_seed_file='flipkart.{categoryId}.reviews.seeds.txt'
 
 class FlipkartSpider(scrapy.Spider):
-    name = "flipkart_products_api"
+    name = "flipkart"
     allowed_domains = ["flipkart.net"]
     start_urls = (
     	'https://affiliate-api.flipkart.net/affiliate/api/rajeshmee.json',
@@ -41,76 +38,39 @@ class FlipkartSpider(scrapy.Spider):
     def parse_category(self,response):
     	categoryId=response.meta['categoryId']
     	products_data=json.loads(response.body)
-        if 'nextUrl' in products_data.keys():
-            nextUrl=products_data['nextUrl']
-            if nextUrl:
-                request=scrapy.Request(url=nextUrl,headers=flipkart_headers,callback=self.parse_category)
-                request.meta['categoryId']=categoryId
-                yield request
-        product_list=products_data['productInfoList']
-        for product in product_list:
-            identifiers=product['productBaseInfo']['productIdentifier']
-            attributes=product['productBaseInfo']['productAttributes']
-            productId=identifiers['productId']
-            categoryPaths=identifiers['categoryPaths']
-            #print attributes
-            product,created=FlipkartBaseProduct.objects.get_or_create(productId=productId)
-            if created:
-                product.title=attributes['title']
-                product.categories=categoryPaths
-                product.productUrl=attributes['productUrl']
-                product.brand=attributes['productBrand']
-                product.description=attributes['productDescription']
-                colorVariants=attributes['colorVariants']
-                if colorVariants:
-                    product.colorVariants=list(colorVariants)
-                color=attributes['color']
-                if color:
-                    product.color=attributes['color']
-                codAvailable=attributes['codAvailable']
-                if codAvailable:
-                    product.codAvailable=codAvailable
-                emiAvailable=attributes['emiAvailable']
-                if emiAvailable:
-                    product.emiAvailable=emiAvailable
-                styleCode=attributes['styleCode']
-                if styleCode:
-                    product.styleCode=styleCode
-                offers=attributes['offers']
-                if offers:
-                    product.offers=offers
-                discount=attributes['discountPercentage']
-                if discount:
-                    product.discount=discount
-                inStock=attributes['inStock']
-                if inStock:
-                    product.inStock=inStock
-                retailPrice=attributes['maximumRetailPrice']['amount']
-                if retailPrice:
-                    product.retailPrice=retailPrice
-                cashback=attributes['cashBack']
-                if cashback:
-                    product.cashback=cashback
-                size=attributes['size']
-                if size:
-                    product.size=size
-                sizeVariants=attributes['sizeVariants']
-                if sizeVariants:
-                    product.sizeVariants=list(sizeVariants)
-                sizeUnit=attributes['sizeUnit']
-                if sizeUnit:
-                    product.sizeUnit=sizeUnit
-                sellingPrice=attributes['sellingPrice']['amount']
-                if sellingPrice:
-                    product.sellingPrice=sellingPrice
-                imageUrls=attributes['imageUrls']
-                if imageUrls:
-                    for key,url in imageUrls.iteritems():
-                        image=Image(size=key,url=url)
-                        product.images.append(image)
-                product.save()
-            else:
-                print "product Already Available and product title=%s"%product.title
+    	product_list=products_data['productInfoList']
+    	for product in product_list:
+    		identifiers=product['productBaseInfo']['productIdentifier']
+    		attributes=product['productBaseInfo']['productAttributes']
+    		print attributes.keys()
+    		productId=identifiers['productId']
+    		categoryPaths=identifiers['categoryPaths']
+    		title=attributes['title']
+    		print " product title ======%s=========== and productId=*******%s******"%(title,productId)
+
+    	if 'nextUrl' in products_data.keys():
+    		nextUrl=products_data['nextUrl']
+    		if nextUrl:
+    			request=scrapy.Request(url=nextUrl,headers=flipkart_headers,callback=self.parse_category)
+    			request.meta['categoryId']=categoryId
+    			yield request
+
+class FlipkartPriceSpider(scrapy.Spider):
+	name="flipkartpricespider"
+	allowed_domains=["flipkart.com"]
+	start_urls=(
+		'https://affiliate-api.flipkart.net/affiliate/api/rajeshmee.json',
+	)
+
+	"""docstring for FlipkartPriceSpider"""
+	def __init__(self):
+		super(FlipkartPriceSpider, self).__init__()
+
+	def parse(self,response):
+		json_data=json.loads(response.body)
+		listings=json_data['apiGroups']['affiliate']['apiListings']
+		for listing in listings:
+			print listing
 
 #flipkart reviews processor
 class FlipkartProductReview(object):
@@ -164,7 +124,6 @@ class FlipkartReviewsProcessor(object):
                     review.reviewer_url=url
                     review.reviewer=name
                 except Exception, e:
-                    #span.review-username is also available please add
                     name=review_box.css('span.review-userName::text').extract()
                     url=review_box.css('a.load-user-widget::attr(href)').extract()
                     review.reviewer_url=url
@@ -181,12 +140,15 @@ class FlipkartReviewsProcessor(object):
             def _certified_reviewer():
                 try:
                     certified=review_box.css('img.img::attr(alt)').extract()[0]
+                    first_review=review_box.css('img.firstReviewerBadge::attr(alt)').extract()[0]
+                    if certified=='certified buyer':
+                        review.certified_buyer=True
+
                     if certified=='certified buyer':
                         review.certified_buyer=True
                 except Exception, e:
                     review.certified_buyer=False
                 try:
-                    first_review=review_box.css('img.firstReviewerBadge::attr(alt)').extract()[0]
                     if first_review=='First to review':
                         review.first_review=True
                     if first_review=='first to review':
@@ -275,45 +237,18 @@ class FlipkartReviewsSpider(CrawlSpider):
         reviews=processor.process_response(response)
         for review in reviews:
             item=ReviewItem()
-            reviewId=review['reviewId']
-            productId=review['productId']
-            reviewer=review['reviewer']
-            reviewer_url=review['reviewer_url']
-            certified=review['certified']
-            date=review['date']
-            head=review['head']
-            parmalink=review['parmalink']
-            review_text=review['review_text']
-            rating=review['rating']
-            
-            item['reviewId']=reviewId
-            item['productId']=productId
-            item['reviewer']=reviewer
-            item['reviewer_url']=reviewer_url
-            item['certified']=certified
-            item['date']=date
-            item['head']=head
-            item['parmalink']=parmalink
-            item['review_text']=review_text
-            item['rating']=rating
+            item['reviewId']=review['reviewId']
+            item['productId']=review['productId']
+            item['reviewer']=review['reviewer']
+            item['reviewer_url']=review['reviewer_url']
+            item['certified']=review['certified']
+            item['date']=review['date']
+            item['head']=review['head']
+            item['parmalink']=review['parmalink']
+            item['review_text']=review['review_text']
+            item['rating']=review['rating']
             yield item
-            
-            flipkart_review,created=FlipkartReview.objects.get_or_create(reviewId=reviewId)
-            if created:
-                flipkart_review.reviewId=reviewId
-                flipkart_review.productId=productId
-                flipkart_review.parmalink=parmalink
-                flipkart_review.head=head
-                flipkart_review.text=review_text
-                flipkart_review.posted_on=date
-                flipkart_review.username=reviewer
-                flipkart_review.userprofile=reviewer_url
-                flipkart_review.rating=rating
-                flipkart_review.certified=certified
-                flipkart_review.save()
-            else:
-                print "Review already available"
-                  
+
     def filter_links(self,links):
         for link in links:
             if link not in self.reviews_url:
@@ -325,44 +260,17 @@ class FlipkartReviewsSpider(CrawlSpider):
         reviews=processor.process_response(response)
         for review in reviews:
             item=ReviewItem()
-            reviewId=review['reviewId']
-            productId=review['productId']
-            reviewer=review['reviewer']
-            reviewer_url=review['reviewer_url']
-            certified=review['certified']
-            date=review['date']
-            head=review['head']
-            parmalink=review['parmalink']
-            review_text=review['review_text']
-            rating=review['rating']
-            
-            item['reviewId']=reviewId
-            item['productId']=productId
-            item['reviewer']=reviewer
-            item['reviewer_url']=reviewer_url
-            item['certified']=certified
-            item['date']=date
-            item['head']=head
-            item['parmalink']=parmalink
-            item['review_text']=review_text
-            item['rating']=rating
+            item['reviewId']=review['reviewId']
+            item['productId']=review['productId']
+            item['reviewer']=review['reviewer']
+            item['reviewer_url']=review['reviewer_url']
+            item['certified']=review['certified']
+            item['date']=review['date']
+            item['head']=review['head']
+            item['parmalink']=review['parmalink']
+            item['review_text']=review['review_text']
+            item['rating']=review['rating']
             yield item
-            
-            flipkart_review,created=FlipkartReview.objects.get_or_create(reviewId=reviewId)
-            if created:
-                flipkart_review.reviewId=reviewId
-                flipkart_review.productId=productId
-                flipkart_review.parmalink=parmalink
-                flipkart_review.head=head
-                flipkart_review.text=review_text
-                flipkart_review.posted_on=date
-                flipkart_review.username=reviewer
-                flipkart_review.userprofile=reviewer_url
-                flipkart_review.rating=rating
-                flipkart_review.certified=certified
-                flipkart_review.save()
-            else:
-                print "Review already available"
 
 class FlipkartSeedSpider(scrapy.Spider):
     name="flipkartseedspider"
